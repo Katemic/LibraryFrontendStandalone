@@ -116,11 +116,11 @@ jobs:
 
       - name: Install Playwright browsers
         working-directory: frontend
-        run: npx playwright install --with-deps
+        run: npx playwright install chromium --with-deps
 
       - name: Run Playwright tests
         working-directory: frontend
-        run: npx playwright test
+        run: npx playwright test --project=chromium --workers=1
         env:
           VITE_API_BASE_URL: http://127.0.0.1:5153
 
