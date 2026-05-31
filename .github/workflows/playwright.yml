@@ -70,14 +70,6 @@ jobs:
             sleep 2
           done
 
-      - name: Create test database schema
-        working-directory: backend
-        run: mysql -h 127.0.0.1 -uroot -proot mydb_test < LibraryTestUtilities/TestData/test_schema.sql
-
-      - name: Seed test database
-        working-directory: backend
-        run: mysql -h 127.0.0.1 -uroot -proot mydb_test < LibraryTestUtilities/TestData/test-seed.sql
-
       - name: Start backend API
         working-directory: backend
         run: |
@@ -110,7 +102,7 @@ jobs:
       - name: Check backend is running
         run: curl --fail http://127.0.0.1:5153/swagger/index.html
 
-      - name: Check database reset endpoint
+      - name: Reset test database
         run: |
           curl -i -X POST http://127.0.0.1:5153/api/test/reset-database
 
