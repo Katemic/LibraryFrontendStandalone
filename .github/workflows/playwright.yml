@@ -67,6 +67,9 @@ jobs:
         env:
           ASPNETCORE_ENVIRONMENT: Testing
           ConnectionStrings__DefaultConnection: server=127.0.0.1;port=3306;database=mydb_test;user=root;password=root;
+          Jwt__Key: this-is-a-test-jwt-key-that-is-long-enough-for-ci
+          Jwt__Issuer: LibraryAPI
+          Jwt__Audience: LibraryFrontend
 
       - name: Check backend is running
         run: curl --fail http://127.0.0.1:5153/swagger/index.html
