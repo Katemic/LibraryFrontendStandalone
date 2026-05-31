@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, FlaskConical } from 'lucide-react';
 import { API_BASE_URL, APP_MODE } from '../api/config';
 import { useAuth } from '../context/AuthContext';
+import WeatherWidget from '../components/WeatherWidget';
+
 
 export default function HomePage() {
   const { isAuthenticated } = useAuth();
@@ -40,8 +42,10 @@ export default function HomePage() {
           <li><CheckCircle2 size={18} /> Loan and return</li>
           <li><CheckCircle2 size={18} /> Reservations</li>
           <li><CheckCircle2 size={18} /> Fines</li>
+          <WeatherWidget />
         </ul>
       </aside>
+      
     </section>
   );
 }
