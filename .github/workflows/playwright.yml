@@ -62,6 +62,14 @@ jobs:
       - name: Install MySQL client
         run: sudo apt-get update && sudo apt-get install -y mysql-client
 
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            mysqladmin ping -h 127.0.0.1 -P 3306 -uroot -proot && break
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
       - name: Create test database schema
         working-directory: backend
         run: mysql -h 127.0.0.1 -uroot -proot mydb_test < LibraryTestUtilities/TestData/test_schema.sql
@@ -73,20 +81,38 @@ jobs:
       - name: Start backend API
         working-directory: backend
         run: |
-          dotnet run --project LibraryAPI/LibraryAPI.csproj --launch-profile Testing &
-          sleep 20
+          dotnet run --project LibraryAPI/LibraryAPI.csproj --launch-profile Testing > ../api.log 2>&1 &
+          echo $! > ../api.pid
         env:
           ASPNETCORE_ENVIRONMENT: Testing
-          ConnectionStrings__DefaultConnection: server=127.0.0.1;port=3306;database=mydb_test;user=root;password=root;
-          Jwt__Key: this-is-a-test-jwt-key-that-is-long-enough-for-ci
-          Jwt__Issuer: LibraryAPI
-          Jwt__Audience: LibraryFrontend
+          ConnectionStrings__DefaultConnection: "server=127.0.0.1;port=3306;database=mydb_test;user=root;password=root;"
+          ConnectionStrings__TestConnection: "server=127.0.0.1;port=3306;database=mydb_test;user=root;password=root;"
+          Jwt__Key: "this-is-a-test-jwt-key-that-is-long-enough-for-ci"
+          Jwt__Issuer: "LibraryAPI"
+          Jwt__Audience: "LibraryFrontend"
+
+      - name: Wait for backend API
+        run: |
+          for i in {1..30}; do
+            if curl -s http://127.0.0.1:5153/swagger/index.html > /dev/null; then
+              echo "Backend API is ready"
+              exit 0
+            fi
+
+            echo "Waiting for backend API..."
+            sleep 2
+          done
+
+          echo "Backend API did not start in time"
+          cat api.log
+          exit 1
 
       - name: Check backend is running
         run: curl --fail http://127.0.0.1:5153/swagger/index.html
 
       - name: Check database reset endpoint
-        run: curl --fail -X POST http://127.0.0.1:5153/api/test/reset-database
+        run: |
+          curl -i -X POST http://127.0.0.1:5153/api/test/reset-database
 
       - name: Install Playwright browsers
         working-directory: frontend
@@ -97,6 +123,10 @@ jobs:
         run: npx playwright test
         env:
           VITE_API_BASE_URL: http://127.0.0.1:5153
+
+      - name: Show backend API logs
+        if: always()
+        run: cat api.log
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
