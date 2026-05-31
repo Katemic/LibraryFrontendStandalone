@@ -29,7 +29,7 @@ test('User can register, log in, and see the catalogue', async ({ page }) => {
   await expect(page.getByTestId('logged-in-user')).toContainText('Katrine');
   await expect(page.locator('section')).toContainText('Catalogue');
 
-  //assert successful log out
+  //assert successful log out 
   await page.getByTestId('logout-button').click();
   await expect(page.getByTestId('nav-login')).toContainText('Login');
 });
