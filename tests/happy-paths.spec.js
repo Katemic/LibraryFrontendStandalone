@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const API_BASE_URL = process.env.VITE_API_BASE_URL ?? 'http://localhost:5153';
+const API_BASE_URL = process.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:5153';
 
 async function resetDatabase(request) {
   const response = await request.post(`${API_BASE_URL}/api/test/reset-database`);
