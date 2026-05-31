@@ -68,7 +68,7 @@ jobs:
 
       - name: Seed test database
         working-directory: backend
-        run: mysql -h 127.0.0.1 -uroot -proot mydb_test < LibraryTestUtilities/TestData/test_seed.sql
+        run: mysql -h 127.0.0.1 -uroot -proot mydb_test < LibraryTestUtilities/TestData/test-seed.sql
 
       - name: Start backend API
         working-directory: backend
