@@ -46,8 +46,11 @@ test('User can borrow and return an available item', async ({ page }) => {
   //borrowing available item
   await page.getByTestId('view-item-11').click();
   await page.getByTestId('borrow-copy-21').click();
+  await expect(page.getByTestId('item-action-success-message'))
+  .toContainText('Loan created successfully.');
+
+   // find the newest active loan row for the item you just borrowed
   await page.getByTestId('nav-my-loans').click();
-  // find the newest active loan row for the item you just borrowed
   const loanRow = page
     .locator('[data-testid^="loan-row-"]')
     .filter({ hasText: 'Catan' })
