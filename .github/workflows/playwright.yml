@@ -59,6 +59,17 @@ jobs:
         working-directory: backend
         run: dotnet build --configuration Release --no-restore
 
+      - name: Install MySQL client
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
+
+      - name: Create test database schema
+        working-directory: backend
+        run: mysql -h 127.0.0.1 -uroot -proot mydb_test < LibraryTestUtilities/TestData/test_schema.sql
+
+      - name: Seed test database
+        working-directory: backend
+        run: mysql -h 127.0.0.1 -uroot -proot mydb_test < LibraryTestUtilities/TestData/test_seed.sql
+
       - name: Start backend API
         working-directory: backend
         run: |
@@ -73,6 +84,9 @@ jobs:
 
       - name: Check backend is running
         run: curl --fail http://127.0.0.1:5153/swagger/index.html
+
+      - name: Check database reset endpoint
+        run: curl --fail -X POST http://127.0.0.1:5153/api/test/reset-database
 
       - name: Install Playwright browsers
         working-directory: frontend
