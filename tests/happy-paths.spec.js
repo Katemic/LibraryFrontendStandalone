@@ -47,11 +47,31 @@ test('User can borrow and return an available item', async ({ page }) => {
   await page.getByTestId('view-item-11').click();
   await page.getByTestId('borrow-copy-21').click();
   await page.getByTestId('nav-my-loans').click();
+  // find the newest active loan row for the item you just borrowed
+  const loanRow = page
+    .locator('[data-testid^="loan-row-"]')
+    .filter({ hasText: 'Catan' })
+    .filter({ hasText: 'active' })
+    .first();
 
-  //returning loan
-  await page.getByTestId('return-loan-24').click();
+  await expect(loanRow).toBeVisible();
+
+  // return that specific loan
+  await loanRow.getByRole('button', { name: /return/i }).click();
+
+  await expect(page.getByTestId('my-loans-success-message'))
+    .toContainText('Loan returned successfully.');
+
   await page.getByTestId('include-returned-checkbox').check();
-  await expect(page.getByTestId('loan-row-24')).toContainText('31 May 2026');
+
+    const returnedCatanLoanRow = page
+    .locator('[data-testid^="loan-row-"]')
+    .filter({ hasText: 'Catan' })
+    .filter({ hasText: 'returned' })
+    .first();
+
+  await expect(returnedCatanLoanRow).toBeVisible();
+  await expect(returnedCatanLoanRow).toContainText('returned');
 });
 
 test('User can reserve an unavailable item and see it in My Reservations, and then cancel it', async ({ page }) => {
