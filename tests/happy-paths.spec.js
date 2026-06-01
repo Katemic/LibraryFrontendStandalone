@@ -2,6 +2,13 @@ import { expect, test } from '@playwright/test';
 
 const API_BASE_URL = process.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:5153';
 
+const LOGIN_EMAIL = 'lars.nielsen@example.com';
+const LOGIN_PASSWORD = 'Test123456';
+
+const FINE_LOGIN_EMAIL = 'mads.jensen@example.com';
+const FINE_LOGIN_PASSWORD = 'Test123456';
+
+
 async function resetDatabase(request) {
   const response = await request.post(`${API_BASE_URL}/api/test/reset-database`);
   expect(response.ok()).toBeTruthy();
@@ -39,8 +46,8 @@ test('User can borrow and return an available item', async ({ page }) => {
   
   //logging in with existing user
   await page.getByTestId('nav-login').click();
-  await page.getByTestId('login-email-input').fill('sofie.hansen@example.com');
-  await page.getByTestId('login-password-input').fill('test123');
+  await page.getByTestId('login-email-input').fill(LOGIN_EMAIL);
+  await page.getByTestId('login-password-input').fill(LOGIN_PASSWORD);
   await page.getByTestId('login-submit-button').click();
 
   //borrowing available item
@@ -82,8 +89,8 @@ test('User can reserve an unavailable item and see it in My Reservations, and th
 
   //logging in with existing user
   await page.getByTestId('nav-login').click();
-  await page.getByTestId('login-email-input').fill('lars.nielsen@example.com');
-  await page.getByTestId('login-password-input').fill('test123');
+  await page.getByTestId('login-email-input').fill(LOGIN_EMAIL);
+  await page.getByTestId('login-password-input').fill(LOGIN_PASSWORD);
   await page.getByTestId('login-submit-button').click();
 
   //reserving unavailable item
@@ -107,9 +114,9 @@ test('User can pay an unpaid fine', async ({ page }) => {
   //logging in with existing user
   await page.getByTestId('nav-login').click();
   await page.getByTestId('login-email-input').click();
-  await page.getByTestId('login-email-input').fill('mads.jensen@example.com');
+  await page.getByTestId('login-email-input').fill(FINE_LOGIN_EMAIL);
   await page.getByTestId('login-password-input').click();
-  await page.getByTestId('login-password-input').fill('test123');
+  await page.getByTestId('login-password-input').fill(FINE_LOGIN_PASSWORD);
   await page.getByTestId('login-submit-button').click();
 
   //assert unpaid fine is visible and can be paid
