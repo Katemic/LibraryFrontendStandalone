@@ -53,7 +53,6 @@ export default function Layout() {
 
       <footer className="site-footer">
         <span><ClipboardList size={16} /> Built for happy-path e2e tests</span>
-        <span><Coins size={16} /> API: {API_BASE_URL}</span>
       </footer>
     </div>
   );

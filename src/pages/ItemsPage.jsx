@@ -53,7 +53,7 @@ export default function ItemsPage() {
         <div>
           <p className="eyebrow">Catalogue</p>
           <h1>Items</h1>
-          <p className="muted-text">Client-side search is included for the UI. Backend filtering is intentionally outside scope.</p>
+          <p className="muted-text">Discover our collection of items.</p>
         </div>
       </div>
 
